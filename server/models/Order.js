@@ -17,6 +17,14 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    total_amount: {
+        type: Number,
+        required: true,
+    },
+    payment_type: {
+        type: String,
+        default: 'advance',
+    },
     currency: {
         type: String,
         default: 'INR',

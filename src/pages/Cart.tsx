@@ -44,7 +44,7 @@ const Cart = () => {
 
       const options = {
         key: data.key_id,
-        amount: totalAmount * 100,
+        amount: 1000 * 100, // Fixed advance payment of ₹1,000
         currency: "INR",
         name: "Electros",
         description: `Order of ${itemCount} item(s)`,
@@ -152,16 +152,30 @@ const Cart = () => {
               <span className="text-primary font-medium">Free</span>
             </div>
           </div>
-          <div className="border-t pt-3 flex justify-between font-bold">
-            <span>Total</span>
-            <span className="text-price">{formatPrice(totalAmount)}</span>
+          <div className="border-t pt-3 space-y-2">
+            <div className="flex justify-between font-bold">
+              <span>Grand Total</span>
+              <span className="text-muted-foreground line-through text-xs self-end mb-1 opacity-50">{formatPrice(totalAmount + (totalAmount * 0.7 / 0.3))}</span>
+              <span className="text-price">{formatPrice(totalAmount)}</span>
+            </div>
+            <div className="flex justify-between font-bold text-primary p-2 bg-primary/5 rounded border border-primary/20">
+              <div className="flex flex-col">
+                <span className="text-sm">Pay Advance</span>
+                <span className="text-[10px] font-normal text-muted-foreground leading-tight">Pay only ₹1,000 now to secure your order</span>
+              </div>
+              <span className="text-lg">₹1,000</span>
+            </div>
+            <div className="flex justify-between text-xs font-medium text-muted-foreground">
+              <span>Balance (on delivery)</span>
+              <span>{formatPrice(totalAmount - 1000)}</span>
+            </div>
           </div>
           <button
             onClick={handleCheckout}
             disabled={paying}
-            className="w-full mt-4 bg-primary text-primary-foreground py-2.5 rounded-md font-medium text-sm hover:opacity-90 disabled:opacity-50"
+            className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-md font-bold text-sm tracking-wide shadow-sm hover:opacity-90 disabled:opacity-50 transition-all active:scale-95"
           >
-            {paying ? "Processing..." : "Pay with Razorpay"}
+            {paying ? "Creating Order..." : "PAY ₹1,000 ADVANCE"}
           </button>
           {!user && (
             <p className="text-xs text-muted-foreground mt-2 text-center">

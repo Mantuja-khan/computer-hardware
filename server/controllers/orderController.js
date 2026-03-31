@@ -7,9 +7,8 @@ import crypto from 'crypto';
 export const createRazorpayOrder = async (req, res) => {
     const { amount, items } = req.body;
 
-    if (!amount || amount <= 0) {
-        return res.status(400).json({ message: "Invalid amount" });
-    }
+    const ADVANCE_AMOUNT = 1000; // Fixed advance amount
+    const totalAmount = amount; // Full cart total
 
     const razorpay = new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID,
@@ -17,7 +16,7 @@ export const createRazorpayOrder = async (req, res) => {
     });
 
     const options = {
-        amount: Math.round(amount * 100),
+        amount: Math.round(ADVANCE_AMOUNT * 100),
         currency: "INR",
         receipt: `order_${Date.now()}`,
     };
@@ -31,10 +30,12 @@ export const createRazorpayOrder = async (req, res) => {
         const order = await Order.create({
             user_id: req.user._id,
             razorpay_order_id: razorpayOrder.id,
-            amount: amount,
+            amount: ADVANCE_AMOUNT, // The amount paid (1000)
+            total_amount: totalAmount, // Full total for record
             currency: "INR",
             status: "created",
             items: items || [],
+            payment_type: 'advance'
         });
 
         res.status(201).json({

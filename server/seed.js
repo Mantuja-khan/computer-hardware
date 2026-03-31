@@ -645,7 +645,25 @@ const seedDB = async () => {
         await Product.deleteMany({});
         console.log('Product collection cleared.');
 
-        await Product.insertMany(products);
+        // Apply 70% discount to all products and mark as refurbished
+        const discountedProducts = products.map(product => {
+            let name = product.name;
+            if (product.category === 'Laptops' && !name.includes('Refurbished')) {
+                name = `Refurbished ${name}`;
+            }
+            return {
+                ...product,
+                name: name,
+                oldPrice: product.price,
+                price: Math.round(product.price * 0.3),
+                badge: 'sale',
+                description: product.category === 'Laptops' 
+                    ? `[Premium Refurbished] ${product.description}`
+                    : product.description
+            };
+        });
+
+        await Product.insertMany(discountedProducts);
         console.log('Database seeded successfully with new products!');
 
         mongoose.connection.close();
